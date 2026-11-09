@@ -1,6 +1,9 @@
 package hello.itemservice.domain.item;
 
 import lombok.Data;
+
+import java.util.List;
+
 /**
  * Domain 모델 같은 경우 @Data를 사용하면 위험하다.
  * -> 그래서 DTO의 경우는 그냥 @Data를 사용해도 무방하다고 하지만, 도메인 객체 같은 경우 필요한 Lombok을 한정해서 사용!
@@ -14,6 +17,11 @@ public class Item {
     private String itemName;
     private Integer price;
     private Integer quantity;
+
+    private Boolean open; // 판매 여부
+    private List<String> region; // 판매 지역
+    private ItemType itemType; // 상품 종류
+    private DeliveryCode deliveryCode; // 배송 방식
 
     /**
      * price,quantity에 int가 아닌 굳이 Integer를 사용하는 이유
