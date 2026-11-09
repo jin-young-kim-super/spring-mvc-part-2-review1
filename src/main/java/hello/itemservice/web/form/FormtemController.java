@@ -1,10 +1,8 @@
-package hello.itemservice.web.basic;
+package hello.itemservice.web.form;
 
 import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +11,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
-@RequestMapping("/basic/items")
+@RequestMapping("/form/items")
 @RequiredArgsConstructor
-public class BasicItemController {
+public class FormtemController {
 
     private final ItemRepository itemRepository;
 
@@ -23,19 +21,19 @@ public class BasicItemController {
     public String items(Model model) {
         List<Item> items = itemRepository.findAll();
         model.addAttribute("items",items);
-        return "basic/items";
+        return "form/items";
     }
 
     @GetMapping("{itemId}")
     public String item(@PathVariable long itemId, Model model) {
         Item findItem = itemRepository.findById(itemId);
         model.addAttribute("item",findItem);
-        return "basic/item";
+        return "form/item";
     }
 
     @GetMapping("/add")
     public String addForm() {
-        return "basic/addForm";
+        return "form/addForm";
     }
 
     //@PostMapping("/add")
@@ -48,7 +46,7 @@ public class BasicItemController {
         Item item = new Item(itemName, price, quantity);
         Item savedItem = itemRepository.save(item);
         model.addAttribute("item",savedItem);
-        return "basic/item";
+        return "form/item";
     }
 
     //@PostMapping("/add")
@@ -58,7 +56,7 @@ public class BasicItemController {
     ) {
         Item savedItem = itemRepository.save(item);
         model.addAttribute("item",savedItem);
-        return "basic/item";
+        return "form/item";
     }
 
     /**
@@ -68,7 +66,7 @@ public class BasicItemController {
     //@PostMapping("/add")
     public String addItemV3(@ModelAttribute("item") Item item) {
         itemRepository.save(item);
-        return "basic/item";
+        return "form/item";
     }
 
     /**
@@ -78,7 +76,7 @@ public class BasicItemController {
     //@PostMapping("/add")
     public String addItemV4(Item item) {
         itemRepository.save(item);
-        return "basic/item";
+        return "form/item";
     }
 
     /**
@@ -88,7 +86,7 @@ public class BasicItemController {
     //@PostMapping("/add")
     public String addItemV5(Item item) {
         itemRepository.save(item);
-        return "redirect:/basic/items/" + item.getId();
+        return "redirect:/form/items/" + item.getId();
     }
 
     // ..../baisc/items?status=true로 리다이렉트됨(물론, 인코딩 문제도 해결됨)
@@ -99,33 +97,19 @@ public class BasicItemController {
         redirectAttributes.addAttribute("itemId",savedItem.getId());
         // ?staus=true의 형태로 쿼리 파라미터 형태로 들어감
         redirectAttributes.addAttribute("staus",true);
-        return "redirect:/basic/items/{itemId}";
+        return "redirect:/form/items/{itemId}";
     }
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
         Item findItem = itemRepository.findById(itemId);
         model.addAttribute("item",findItem);
-        return "/basic/editForm";
+        return "/form/editForm";
     }
 
     @PostMapping("/{itemId}/edit")
     public String edit(@PathVariable Long itemId, @ModelAttribute Item item) {
         itemRepository.updateItem(itemId, item);
-        return "redirect:/basic/items/{itemId}";
+        return "redirect:/form/items/{itemId}";
     }
-
-
-
-    /**
-     * 테스트용 데이터 추가
-     */
-    @PostConstruct
-    public void init() {
-        itemRepository.save(new Item("itemA",1000,10));
-        itemRepository.save(new Item("itemB",2000,20));
-    }
-
-
-
 }
