@@ -3,6 +3,7 @@ package hello.itemservice.web.form;
 import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+@Slf4j
 @Controller
 @RequestMapping("/form/items")
 @RequiredArgsConstructor
@@ -93,6 +95,9 @@ public class FormtemController {
     // ..../baisc/items?status=true로 리다이렉트됨(물론, 인코딩 문제도 해결됨)
     @PostMapping("/add")
     public String addItemV6(Item item, RedirectAttributes redirectAttributes) {
+
+        log.info("item.open={}",item.getOpen());
+
         Item savedItem = itemRepository.save(item);
         // {itemId}에 자동으로 saveItem.getId()가 들어감
         redirectAttributes.addAttribute("itemId",savedItem.getId());
