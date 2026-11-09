@@ -9,3 +9,22 @@
 했는지 판단하기가 애매하고, 로직도 짜기가 너무 불편하다. 
 
 
+그래서 스프링 MVC는 히든 필드를 통해서 이 문제를 해결한다.
+아래의 히든 필드를 추가했다.
+ <!-- 히든 필드 추가 -->
+<input type="hidden" name="_open" value="on"/>
+만약
+●　체크 박스를 선택하는 경우 : itemName=itemA&price=10000&quantity=10&[open=on&_open=on]
+-> item.open=true 값으로 대입됨
+
+●　체크 박스를 선택하지 않는 경우 itemName=itemA&price=10000&quantity=10&[_open=on]
+-> item.open=【false】 값으로 대입됨
+
+원리
+open=on이 넘어오면 스프링 MVC는 "아! 클라이언트가 체크박스 선택을 했구나"하면서 _open을 무시하고 open 변수에 true를 대입한다.
+만약 체크 박스가 선택되지 않아서 _open=on이 넘어 오면 "아! 클라이언트가 체크박스 선택을 안 했구나"하고 _open 변수를 보고 판단해서 open에 false를 반환한다.
+그럼 개발자는 true/false인지만 판단해서 그대로 DB에 떄려 박으면 그만이다.
+
+
+
+
