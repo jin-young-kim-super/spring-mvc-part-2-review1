@@ -115,7 +115,14 @@ public class FormtemController {
 
     @PostMapping("/{itemId}/edit")
     public String edit(@PathVariable Long itemId, @ModelAttribute Item item) {
-        itemRepository.updateItem(itemId, item);
+        Item updateParam = itemRepository.findById(itemId);
+        updateParam.setItemName(updateParam.getItemName());
+        updateParam.setPrice(updateParam.getPrice());
+        updateParam.setQuantity(updateParam.getQuantity());
+        updateParam.setOpen(updateParam.getOpen());
+        updateParam.setRegions(updateParam.getRegions());
+        updateParam.setItemType(updateParam.getItemType());
+        updateParam.setDeliveryCode(updateParam.getDeliveryCode());
         return "redirect:/form/items/{itemId}";
     }
 }
