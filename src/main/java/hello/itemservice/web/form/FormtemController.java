@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Slf4j
 @Controller
-@RequestMapping("/form/items")
+@RequestMapping("/message/items")
 @RequiredArgsConstructor
 public class FormtemController {
 
@@ -27,7 +27,7 @@ public class FormtemController {
     public String items(Model model) {
         List<Item> items = itemRepository.findAll();
         model.addAttribute("items",items);
-        return "form/items";
+        return "message/items";
     }
 
     @GetMapping("{itemId}")
@@ -35,14 +35,14 @@ public class FormtemController {
         Item findItem = itemRepository.findById(itemId);
         model.addAttribute("item",findItem);
 
-        return "form/item";
+        return "message/item";
     }
 
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("item",new Item());
 
-        return "form/addForm";
+        return "message/addForm";
     }
 
     //@PostMapping("/add")
@@ -55,7 +55,7 @@ public class FormtemController {
         Item item = new Item(itemName, price, quantity);
         Item savedItem = itemRepository.save(item);
         model.addAttribute("item",savedItem);
-        return "form/item";
+        return "message/item";
     }
 
     //@PostMapping("/add")
@@ -65,7 +65,7 @@ public class FormtemController {
     ) {
         Item savedItem = itemRepository.save(item);
         model.addAttribute("item",savedItem);
-        return "form/item";
+        return "message/item";
     }
 
     /**
@@ -75,7 +75,7 @@ public class FormtemController {
     //@PostMapping("/add")
     public String addItemV3(@ModelAttribute("item") Item item) {
         itemRepository.save(item);
-        return "form/item";
+        return "message/item";
     }
 
     /**
@@ -85,7 +85,7 @@ public class FormtemController {
     //@PostMapping("/add")
     public String addItemV4(Item item) {
         itemRepository.save(item);
-        return "form/item";
+        return "message/item";
     }
 
     /**
@@ -95,31 +95,31 @@ public class FormtemController {
     //@PostMapping("/add")
     public String addItemV5(Item item) {
         itemRepository.save(item);
-        return "redirect:/form/items/" + item.getId();
+        return "redirect:/message/items/" + item.getId();
     }
 
     // ..../baisc/items?status=true로 리다이렉트됨(물론, 인코딩 문제도 해결됨)
     @PostMapping("/add")
     public String addItemV6(Item item, RedirectAttributes redirectAttributes) {
-        
+
         Item savedItem = itemRepository.save(item);
         // {itemId}에 자동으로 saveItem.getId()가 들어감
         redirectAttributes.addAttribute("itemId",savedItem.getId());
         // ?staus=true의 형태로 쿼리 파라미터 형태로 들어감
         redirectAttributes.addAttribute("staus",true);
-        return "redirect:/form/items/{itemId}";
+        return "redirect:/message/items/{itemId}";
     }
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
         Item findItem = itemRepository.findById(itemId);
         model.addAttribute("item",findItem);
-        return "/form/editForm";
+        return "/message/editForm";
     }
 
     @PostMapping("/{itemId}/edit")
     public String edit(@PathVariable Long itemId, @ModelAttribute Item item) {
         itemRepository.updateItem(itemId, item);
-        return "redirect:/form/items/{itemId}";
+        return "redirect:/message/items/{itemId}";
     }
 }
