@@ -21,6 +21,18 @@ public class FormtemController {
 
     private final ItemRepository itemRepository;
 
+    // regions 중복이 3군데나 있다.
+    // -> 아래처럼 구현을 하면, FormController가 호출되면 항상 Model에 regions에 자동으로 격납된다
+    @ModelAttribute("regions")
+    public Map<String,String> regions() {
+        Map<String,String> regions = new LinkedHashMap<>();
+        regions.put("SEOUL","서울");
+        regions.put("BUSAN","부산");
+        regions.put("JEJU","제주");
+        return regions;
+    }
+
+
     @GetMapping
     public String items(Model model) {
         List<Item> items = itemRepository.findAll();
@@ -33,24 +45,12 @@ public class FormtemController {
         Item findItem = itemRepository.findById(itemId);
         model.addAttribute("item",findItem);
 
-        Map<String,String> regions = new LinkedHashMap<>();
-        regions.put("SEOUL","서울");
-        regions.put("BUSAN","부산");
-        regions.put("JEJU","제주");
-        model.addAttribute("regions",regions);
-
         return "form/item";
     }
 
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("item",new Item());
-
-        Map<String,String> regions = new LinkedHashMap<>();
-        regions.put("SEOUL","서울");
-        regions.put("BUSAN","부산");
-        regions.put("JEJU","제주");
-        model.addAttribute("regions",regions);
 
         return "form/addForm";
     }
@@ -126,13 +126,6 @@ public class FormtemController {
     public String editForm(@PathVariable Long itemId, Model model) {
         Item findItem = itemRepository.findById(itemId);
         model.addAttribute("item",findItem);
-
-        Map<String,String> regions = new LinkedHashMap<>();
-        regions.put("SEOUL","서울");
-        regions.put("BUSAN","부산");
-        regions.put("JEJU","제주");
-        model.addAttribute("regions",regions);
-
         return "/form/editForm";
     }
 
