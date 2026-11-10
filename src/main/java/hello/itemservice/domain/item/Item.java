@@ -21,7 +21,7 @@ public class Item {
     private Boolean open; // 판매 여부
     private List<String> regions; // 판매 지역
     private ItemType itemType; // 상품 종류
-    private DeliveryCode deliveryCode; // 배송 방식
+    private String  deliveryCode; // 배송 방식
 
     /**
      * price,quantity에 int가 아닌 굳이 Integer를 사용하는 이유
