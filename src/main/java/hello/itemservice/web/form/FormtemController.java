@@ -32,7 +32,6 @@ public class FormtemController {
         return regions;
     }
 
-
     @GetMapping
     public String items(Model model) {
         List<Item> items = itemRepository.findAll();
@@ -113,6 +112,7 @@ public class FormtemController {
     public String addItemV6(Item item, RedirectAttributes redirectAttributes) {
 
         log.info("item.open={}",item.getOpen());
+        log.info("item.regions={}",item.getRegions());
 
         Item savedItem = itemRepository.save(item);
         // {itemId}에 자동으로 saveItem.getId()가 들어감
