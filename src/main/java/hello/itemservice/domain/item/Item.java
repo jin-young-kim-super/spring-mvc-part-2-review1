@@ -18,11 +18,6 @@ public class Item {
     private Integer price;
     private Integer quantity;
 
-    private Boolean open; // 판매 여부
-    private List<String> regions; // 판매 지역
-    private ItemType itemType; // 상품 종류
-    private String  deliveryCode; // 배송 방식
-
     /**
      * price,quantity에 int가 아닌 굳이 Integer를 사용하는 이유
      * -> price의 경우 아무 값이 안 들어 가는 경우, 만약 int를 사용하여 price=0이 들어 가는 경우를 방지하기 위해서이다.
