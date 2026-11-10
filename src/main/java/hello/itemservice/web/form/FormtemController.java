@@ -23,30 +23,6 @@ public class FormtemController {
 
     private final ItemRepository itemRepository;
 
-    // regions 중복이 3군데나 있다.
-    // -> 아래처럼 구현을 하면, FormController가 호출되면 항상 Model에 regions에 자동으로 격납된다
-    @ModelAttribute("regions")
-    public Map<String,String> regions() {
-        Map<String,String> regions = new LinkedHashMap<>();
-        regions.put("SEOUL","서울");
-        regions.put("BUSAN","부산");
-        regions.put("JEJU","제주");
-        return regions;
-    }
-
-    @ModelAttribute("itemTypes")
-    public ItemType[] itemTypes() {
-        return ItemType.values();
-    }
-
-    @ModelAttribute("deliveryCodes")
-    public List<DeliveryCode> deliveryCodes() {
-        List<DeliveryCode> deliveryCodes = new ArrayList<>();
-        deliveryCodes.add(new DeliveryCode("FAST", "빠른 배송"));
-        deliveryCodes.add(new DeliveryCode("NORMAL", "일반 배송"));
-        deliveryCodes.add(new DeliveryCode("SLOW", "느린 배송"));
-        return deliveryCodes;
-    }
     @GetMapping
     public String items(Model model) {
         List<Item> items = itemRepository.findAll();
@@ -125,10 +101,7 @@ public class FormtemController {
     // ..../baisc/items?status=true로 리다이렉트됨(물론, 인코딩 문제도 해결됨)
     @PostMapping("/add")
     public String addItemV6(Item item, RedirectAttributes redirectAttributes) {
-
-        log.info("item.open={}",item.getOpen());
-        log.info("item.regions={}",item.getRegions());
-
+        
         Item savedItem = itemRepository.save(item);
         // {itemId}에 자동으로 saveItem.getId()가 들어감
         redirectAttributes.addAttribute("itemId",savedItem.getId());
