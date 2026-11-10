@@ -1,6 +1,7 @@
 package hello.itemservice.domain.item;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Repository
 public class ItemRepository {
 
@@ -33,7 +35,9 @@ public class ItemRepository {
         findItem.setItemName(updateItem.getItemName());
         findItem.setPrice(updateItem.getPrice());
         findItem.setQuantity(updateItem.getQuantity());
-
+        findItem.setOpen(updateItem.getOpen());
+        findItem.setRegions(updateItem.getRegions());
+        findItem.setItemType(updateItem.getItemType());
     }
 
     /**
