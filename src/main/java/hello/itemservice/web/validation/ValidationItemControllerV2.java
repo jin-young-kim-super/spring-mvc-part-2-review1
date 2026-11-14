@@ -85,6 +85,7 @@ public class ValidationItemControllerV2 {
 
         // 검증 시 오류가 있는 경우 사용자에게 입력값을 그대로 보내고 다시 등록 폼으로 돌아가게 해야 한다.
         if(bindingResult.hasErrors()) {
+            log.info("errors={}",bindingResult);
             //model.addAttribute("errors",errors);
             // -> BindingResult는 자동으로 Model에 담긴다
             return "validation/v2/addForm";
