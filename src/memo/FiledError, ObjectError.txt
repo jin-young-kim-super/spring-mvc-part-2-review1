@@ -1,0 +1,19 @@
+BindingResult 도입후 가격에 문자열을 넣었을 때 발생하는 문제는 해결하였다. 
+근데 새로운 문제가 하나 생겼다. 
+현재 가격의 범위는 1,000 ~ 1,00000까지 허용하는데, 만약 10 입력시, 오류 메시지는 출력이 되지만 사용자의 입력값 10은 비표시 상태가 되버린다. 
+(아마, 스프링이 Integer 타입에 10이 들어가니, 문제가 없다고 판단을 하고 사용자 입력값 10을 BIndingResult에 담지 않아서 생긴 문제일 듯)
+
+그 문제를 해결해 볼 것이다.
+해법은 바로 FieldError,ObjectError의 또 다른 생성자를 사용하여 @Model Item item을 통해 입력된 숫자값을 getter를 통해 개발자가 직접 입력하는 것이다.
+
+ex)
+bindingResult.addError(new FieldError("item","itemName",item.getItemName(),false,null,null,"상품 이름은 필수입니다."));
+
+false : Binding 에러는 아니다.
+1번째 null : 오류 message 지정
+2번째 null : 오류 message에 매개변수 지정
+
+ex)
+bindingResult.addError(new ObjectError("item",null,null,"가격 * 수량의 합은 10,000원 이상이여야 합니다. 현재 값 : " + resultPrice));
+1번째 null : 오류 message 지정
+2번째 null : 오류 message에 매개변수 지정
