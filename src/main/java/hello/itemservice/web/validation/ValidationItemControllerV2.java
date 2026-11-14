@@ -75,7 +75,7 @@ public class ValidationItemControllerV2 {
         }
 
         // 복합 룰 검증 : 너무 가격이 작은 주문은 안 받는다는 비지니스 요구사항에 대한 검증
-        if(item.getPrice() != null || item.getQuantity() != null) {
+        if(item.getPrice() != null && item.getQuantity() != null) {
             int resultPrice = item.getPrice() * item.getQuantity();
             if(resultPrice < 10000) {
                 //errors.put("globalError","가격 * 수량의 합은 10,000원 이상이여야 합니다. 현재 값 : " + resultPrice);
