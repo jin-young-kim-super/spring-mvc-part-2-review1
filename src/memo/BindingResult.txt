@@ -1,0 +1,9 @@
+String addItem(@ModelAttribute Item item, BindingResult bindingResult....)
+-> 「남은 문제점」이미지에도 명기돼 있듯이, 만약에 Integer 타입인 price에 사용자가 문자열을 입력한 경우, 애초에 컨트롤러 진입을 하지 못한다. 
+왜냐하면 컨트롤러 진입 전 ArgumenResolver에 의해 price가 바인딩되는데 Integer 타입에 문자열 바인딩에 실패를 하기 때문이다.
+또 하나 심긱한 문제점이 바로 사용자가 입력한 잘못된 문자열을 다시 보여 줘야 하는데, 위 경우 그것이 불가능하다는 것이다. 
+그래서 스프링은 "사용자 입력값을 저장하는 별도의 공간"이 필요하겠다고 판단하여 만든 것이 바로 BindingResult이다. 이 공간에 문자열 등을 보관하여 사용자에게 다시 잘못된 입력값을
+보여 줄 수가 있다. 
+
+주의 사항 : BindingResult는 반드시 검증 대상의 Item 객체 뒤에 선언을 해야 한다.  
+
