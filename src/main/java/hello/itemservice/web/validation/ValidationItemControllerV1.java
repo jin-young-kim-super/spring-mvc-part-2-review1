@@ -1,6 +1,5 @@
-package hello.itemservice.web.form;
+package hello.itemservice.web.validation;
 
-import hello.itemservice.domain.item.DeliveryCode;
 import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,16 +9,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Controller
-@RequestMapping("/message/items")
+@RequestMapping("/validation/v1/items")
 @RequiredArgsConstructor
-public class FormtemController {
+public class ValidationItemControllerV1 {
 
     private final ItemRepository itemRepository;
 
@@ -27,7 +23,7 @@ public class FormtemController {
     public String items(Model model) {
         List<Item> items = itemRepository.findAll();
         model.addAttribute("items",items);
-        return "message/items";
+        return "validation/v1/items";
     }
 
     @GetMapping("{itemId}")
@@ -35,14 +31,14 @@ public class FormtemController {
         Item findItem = itemRepository.findById(itemId);
         model.addAttribute("item",findItem);
 
-        return "message/item";
+        return "validation/v1/item";
     }
 
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("item",new Item());
 
-        return "message/addForm";
+        return "validation/v1/addForm";
     }
 
     //@PostMapping("/add")
@@ -55,7 +51,7 @@ public class FormtemController {
         Item item = new Item(itemName, price, quantity);
         Item savedItem = itemRepository.save(item);
         model.addAttribute("item",savedItem);
-        return "message/item";
+        return "validation/v1/item";
     }
 
     //@PostMapping("/add")
@@ -65,7 +61,7 @@ public class FormtemController {
     ) {
         Item savedItem = itemRepository.save(item);
         model.addAttribute("item",savedItem);
-        return "message/item";
+        return "validation/v1/item";
     }
 
     /**
@@ -75,7 +71,7 @@ public class FormtemController {
     //@PostMapping("/add")
     public String addItemV3(@ModelAttribute("item") Item item) {
         itemRepository.save(item);
-        return "message/item";
+        return "validation/v1/item";
     }
 
     /**
@@ -85,7 +81,7 @@ public class FormtemController {
     //@PostMapping("/add")
     public String addItemV4(Item item) {
         itemRepository.save(item);
-        return "message/item";
+        return "validation/v1/item";
     }
 
     /**
@@ -95,7 +91,7 @@ public class FormtemController {
     //@PostMapping("/add")
     public String addItemV5(Item item) {
         itemRepository.save(item);
-        return "redirect:/message/items/" + item.getId();
+        return "redirect:/validation/v1/items/" + item.getId();
     }
 
     // ..../baisc/items?status=true로 리다이렉트됨(물론, 인코딩 문제도 해결됨)
@@ -107,19 +103,19 @@ public class FormtemController {
         redirectAttributes.addAttribute("itemId",savedItem.getId());
         // ?staus=true의 형태로 쿼리 파라미터 형태로 들어감
         redirectAttributes.addAttribute("staus",true);
-        return "redirect:/message/items/{itemId}";
+        return "redirect:/validation/v1/items/{itemId}";
     }
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
         Item findItem = itemRepository.findById(itemId);
         model.addAttribute("item",findItem);
-        return "/message/editForm";
+        return "/validation/v1/editForm";
     }
 
     @PostMapping("/{itemId}/edit")
     public String edit(@PathVariable Long itemId, @ModelAttribute Item item) {
         itemRepository.updateItem(itemId, item);
-        return "redirect:/message/items/{itemId}";
+        return "redirect:/validation/v1/items/{itemId}";
     }
 }
