@@ -1,0 +1,4 @@
+new String[]{"required.item.itemName"}
+-> 만약 required.item.itemName이 메세지 파일에 없다면 아래와 같이 두 번째 인자를 메세지로 출력시키기 위함
+ex)
+new String[]{"required.item.itemName" "required.item.itemName2"}
