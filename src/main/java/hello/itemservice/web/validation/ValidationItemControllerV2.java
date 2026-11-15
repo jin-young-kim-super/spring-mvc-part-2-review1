@@ -152,7 +152,7 @@ public class ValidationItemControllerV2 {
         return "redirect:/validation/v2/items/{itemId}";
     }
 
-    @PostMapping("/add")
+    //@PostMapping("/add")
     public String addItemV3(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         /**
@@ -182,6 +182,58 @@ public class ValidationItemControllerV2 {
             if(resultPrice < 10000) {
                 //bindingResult.addError(new ObjectError("item",null,null,"가격 * 수량의 합은 10,000원 이상이여야 합니다. 현재 값 : " + resultPrice));
                 bindingResult.addError(new ObjectError("item",new String[]{"totalPriceMin"},new Object[]{10000,resultPrice},null));
+            }
+        }
+
+        // 검증 시 오류가 있는 경우 사용자에게 입력값을 그대로 보내고 다시 등록 폼으로 돌아가게 해야 한다.
+        if(bindingResult.hasErrors()) {
+            log.info("errors={}",bindingResult);
+            //model.addAttribute("errors",errors);
+            // -> BindingResult는 자동으로 Model에 담긴다
+            return "validation/v2/addForm";
+        }
+
+        Item savedItem = itemRepository.save(item);
+        // {itemId}에 자동으로 saveItem.getId()가 들어감
+        redirectAttributes.addAttribute("itemId",savedItem.getId());
+        // ?staus=true의 형태로 쿼리 파라미터 형태로 들어감
+        redirectAttributes.addAttribute("staus",true);
+        return "redirect:/validation/v2/items/{itemId}";
+    }
+
+    @PostMapping("/add")
+    public String addItemV4(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+
+        // 출력 결과 : Item
+        log.info("BindingResult의 검증 객체 = {}",bindingResult.getObjectName());
+
+        /**
+         * 검증 로직 시작(특정 필드, 복합 룰 검증)
+         */
+        // 상품명 검증 로직(특정 필드 검증)
+        if(!StringUtils.hasText(item.getItemName())) {
+            //bindingResult.addError(new FieldError("item","itemName",item.getItemName(),false,new String[]{"required.item.itemName"},null,null));
+            bindingResult.rejectValue("itemName","required");
+        }
+
+        // 상품 가격 검증 로직(특정 필드 검증)
+        if(item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 100000) {
+            //bindingResult.addError(new FieldError("item","price",item.getPrice(),false,new String[]{"range.item.price"},new Object[]{1000,100000},null));
+            bindingResult.rejectValue("price","range",new Object[]{1000,100000},null);
+        }
+
+        // 상품 수량 검증 로직(특정 필드 검증)
+        if(item.getQuantity() == null || item.getQuantity() > 9999) {
+            //bindingResult.addError(new FieldError("item","quantity",item.getQuantity(),false,new String[]{"max.item.quantity"},new Object[]{9999},null));
+            bindingResult.rejectValue("quantity","max",new Object[]{9999},null);
+        }
+
+        // 복합 룰 검증 : 너무 가격이 작은 주문은 안 받는다는 비지니스 요구사항에 대한 검증
+        if(item.getPrice() != null && item.getQuantity() != null) {
+            int resultPrice = item.getPrice() * item.getQuantity();
+            if(resultPrice < 10000) {
+               //bindingResult.addError(new ObjectError("item",new String[]{"totalPriceMin"},new Object[]{10000,resultPrice},null));
+                bindingResult.reject("totalPriceMin",new Object[]{10000,resultPrice},null);
             }
         }
 

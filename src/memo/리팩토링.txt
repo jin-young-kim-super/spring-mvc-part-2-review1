@@ -1,0 +1,7 @@
+핵심은 일단 "BindingResult는 검증 객체를 이미 알고 있다는 것"이다. 
+이걸 이용하여 FieldError와 ObjectError를 간소화할 수가 있다.
+-> FieldError와 ObjectError의 생성자는 다루기가 너무 번거롭다.
+
+BindingResult가 제공하는 rejectValue()와 reject()를 사용하면 복잡한 FieldError, ObjectError 생성자를
+내부적으로 자동 생성해준다.
+
