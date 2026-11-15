@@ -29,3 +29,38 @@ max = 최대 {0}까지 허용합니다.
 전체 오류 메시지 정책을 변경 가능하다.
 
 스프링은 MessageCodesResolver 라는 것으로 이러한 기능을 지원한다
+
+
+MessageCodesResolver 사용 예시
+ex)
+@Test
+void setMessageCodesResolver_Field() {
+    String[] messageCodes = messageCodesResolver.resolveMessageCodes("required", "item", "itemName", String.class);
+    for (String messageCode : messageCodes) {
+        System.out.println("messageCode = " + messageCode);
+    }
+    /**
+     * messageCodesResolver.resolveMessageCodes("required", "item", "itemName", String.class) 내부 동작
+     * -> "itemName"이라는 필드명을 넣어 줬기 때문에 BindinResult.addErros(new FieldError(...new String[]{"required.item.itemName","required.itemName",.....}))이 자동 생성
+     * 출력 결과
+     * messageCode = required.item.itemName(우선 순위1)
+     * messageCode = required.itemName(우선 순위2)
+     * messageCode = required.java.lang.String(우선 순위3) -
+     * messageCode = required(우선 순위4)
+     */
+}
+messageCodesResolver.resolveMessageCodes("required", "item", "itemName", String.class);
+-> 여기서 만약에 상품명(itemName)이 필수로 입력이 돼 있다고 했을 떄 required.item.itemName가 정의돼 있다면
+"상품명은 필수값"이 오류 메시지로 출력돼 버린다.
+반드시 검증 로직을 거쳐서 거기에 맞는 오류 코드를 입력해줘야 한다는 점에 주의하자
+예를 들어, 상품명이 비어 있는 검증 로직은 이미 통과한 상황이고, 근데 이 상품명이 문자가 아닌 숫자와 특수기호가 들어 갔다고 하자.
+그럼 아래와 같이 코드를 작성해 놓아야 한다.
+ex)
+String[] messageCodes = messageCodesResolver.resolveMessageCodes("required", null, null, String.class);
+ /**
+ * 출력 결과
+ * messageCode = required.java.lang.String(우선 순위1)
+ * messageCode = required(우선 순위2)
+ */
+
+
