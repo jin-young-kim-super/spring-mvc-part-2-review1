@@ -25,6 +25,7 @@ import java.util.Map;
 public class ValidationItemControllerV2 {
 
     private final ItemRepository itemRepository;
+    private final ItemValidator itemValidator;
 
     @GetMapping
     public String items(Model model) {
@@ -201,7 +202,7 @@ public class ValidationItemControllerV2 {
         return "redirect:/validation/v2/items/{itemId}";
     }
 
-    @PostMapping("/add")
+    //@PostMapping("/add")
     public String addItemV4(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         // 출력 결과 : Item
@@ -238,6 +239,26 @@ public class ValidationItemControllerV2 {
         }
 
         // 검증 시 오류가 있는 경우 사용자에게 입력값을 그대로 보내고 다시 등록 폼으로 돌아가게 해야 한다.
+        if(bindingResult.hasErrors()) {
+            log.info("errors={}",bindingResult);
+            //model.addAttribute("errors",errors);
+            // -> BindingResult는 자동으로 Model에 담긴다
+            return "validation/v2/addForm";
+        }
+
+        Item savedItem = itemRepository.save(item);
+        // {itemId}에 자동으로 saveItem.getId()가 들어감
+        redirectAttributes.addAttribute("itemId",savedItem.getId());
+        // ?staus=true의 형태로 쿼리 파라미터 형태로 들어감
+        redirectAttributes.addAttribute("staus",true);
+        return "redirect:/validation/v2/items/{itemId}";
+    }
+
+    @PostMapping("/add")
+    public String addItemV5(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+
+        itemValidator.validate(item,bindingResult);
+
         if(bindingResult.hasErrors()) {
             log.info("errors={}",bindingResult);
             //model.addAttribute("errors",errors);
