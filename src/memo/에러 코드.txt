@@ -64,3 +64,8 @@ String[] messageCodes = messageCodesResolver.resolveMessageCodes("required", nul
  */
 
 
+MessageCodesResolver의 호출 순서
+1.bindingResult.rejectValue("itemName","required");
+-> 개발자가 컨트롤러에서 알맞은 오류 코드를 지정
+2. 타임리프 등의 템필릿 엔진 이동 시에 MessageCodesResolver를 호출돼서 오류 코드를 자동생성하여 우선순위에 맞게 오류 코드를 생성한다.
+
