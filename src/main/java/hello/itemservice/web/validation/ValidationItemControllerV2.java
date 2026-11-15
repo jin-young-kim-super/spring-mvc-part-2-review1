@@ -11,6 +11,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -26,6 +28,16 @@ public class ValidationItemControllerV2 {
 
     private final ItemRepository itemRepository;
     private final ItemValidator itemValidator;
+
+    /**
+     * 이 컨트롤러가 호출될 때마다 init()이 호출됨
+     * -> 고로, WebDataBinder 객체와 그 안에 들어 가는 ItemValidator 객체가 항상 새로 생성된다.
+     * (물론, 모든 컨트롤러에 대해 클로벌하게 적용하는 방법도 있다. 그건 나중에!)
+     */
+    @InitBinder
+    public void init(WebDataBinder dataBinder) {
+        dataBinder.addValidators(itemValidator);
+    }
 
     @GetMapping
     public String items(Model model) {
@@ -254,10 +266,40 @@ public class ValidationItemControllerV2 {
         return "redirect:/validation/v2/items/{itemId}";
     }
 
-    @PostMapping("/add")
+    //@PostMapping("/add")
     public String addItemV5(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         itemValidator.validate(item,bindingResult);
+
+        if(bindingResult.hasErrors()) {
+            log.info("errors={}",bindingResult);
+            //model.addAttribute("errors",errors);
+            // -> BindingResult는 자동으로 Model에 담긴다
+            return "validation/v2/addForm";
+        }
+
+        Item savedItem = itemRepository.save(item);
+        // {itemId}에 자동으로 saveItem.getId()가 들어감
+        redirectAttributes.addAttribute("itemId",savedItem.getId());
+        // ?staus=true의 형태로 쿼리 파라미터 형태로 들어감
+        redirectAttributes.addAttribute("staus",true);
+        return "redirect:/validation/v2/items/{itemId}";
+    }
+
+    /**
+     * @Validated : 반드시 붙여 줘야 validator가 적용된다.
+     * -> @Validated가 없다고 가정해보자. 그럼 @InitBinder에 의해서 해당 컨트롤러 내의 모든 객체에 대해서
+     * validation이 일어난다. 그러나 개발을 하다 보면 validation을 적용하고 싶지 않는 경우가 있다. 아마 그런 상황을 위해서 스프링이
+     * @Validated를 붙여야만 검증이 일어나게 만든 것이 아닐까?
+     * ※@Validated대신 @Valid로 해도 ㄱㅊ!
+     * -> @Validated는 스프링이 제공하는 것이고, @Valid는 자바 표준 에노테이션이다.
+     * 다만 @Valid를 사용하려면, build.gradle에 의존관계를 추가해야 한다.
+     *
+     * Q. @Validated가 붙은 객체에 대해서 과연 Webdatabinder는 대체 어떻게 적정한 validotor를 고를까?
+     * -> 그게 바로 Validator 인터페이스가 제공하는 support()메서드이다.
+     */
+    @PostMapping("/add")
+    public String addItemV6(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         if(bindingResult.hasErrors()) {
             log.info("errors={}",bindingResult);

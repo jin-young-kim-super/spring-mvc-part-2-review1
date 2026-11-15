@@ -1,0 +1,19 @@
+WebMvcConfigurer 인터페이스가 validator의 글로벌 적용을 담당한다. 
+그래서 아래와 같이 글로벌 적용이 가능하다. 
+참고로, 이런 글로벌 설정은 잘 안 하다고 한다.
+
+
+물론 검증 대상 파라미터에 @Vaidated를 붙여야 함은 다름이 없다.
+
+@SpringBootApplication
+public class ItemServiceApplication implements WebMvcConfigurer {
+
+ public static void main(String[] args) {
+ 	SpringApplication.run(ItemServiceApplication.class, args);
+ }
+
+ @Override
+ public Validator getValidator() {
+	 return new ItemValidator();
+ }
+}
