@@ -30,7 +30,7 @@ public class ItemRepository {
         return new ArrayList<>(store.values());
     }
 
-    public void updateItem(Long itemId, Item updateItem) {
+    public void update(Long itemId, Item updateItem) {
         Item findItem = findById(itemId);
         findItem.setItemName(updateItem.getItemName());
         findItem.setPrice(updateItem.getPrice());

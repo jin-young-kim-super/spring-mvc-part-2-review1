@@ -1,4 +1,4 @@
-package hello.itemservice.web.validation.form;
+package hello.itemservice.web.Item.form;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;

@@ -15,15 +15,19 @@
     </style>
 </head>
 <body>
+
 <div class="container">
+
     <div class="py-5 text-center">
         <h2 th:text="#{page.addItem}">상품 등록</h2>
     </div>
+
     <form action="item.html" th:action th:object="${item}" method="post">
+
         <div th:if="${#fields.hasGlobalErrors()}">
-            <p class="field-error" th:each="err : ${#fields.globalErrors()}"
-               th:text="${err}">글로벌 오류 메시지</p>
+            <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
         </div>
+
         <div>
             <label for="itemName" th:text="#{label.item.itemName}">상품명</label>
             <input type="text" id="itemName" th:field="*{itemName}"
@@ -48,20 +52,23 @@
                 수량 오류
             </div>
         </div>
+
         <hr class="my-4">
+
         <div class="row">
             <div class="col">
-                <button class="w-100 btn btn-primary btn-lg" type="submit"
-                        th:text="#{button.save}">저장</button>
+                <button class="w-100 btn btn-primary btn-lg" type="submit" th:text="#{button.save}">저장</button>
             </div>
             <div class="col">
                 <button class="w-100 btn btn-secondary btn-lg"
                         onclick="location.href='items.html'"
-                        th:onclick="|location.href='@{/validation/v4/items}'|"
+                        th:onclick="|location.href='@{/items}'|"
                         type="button" th:text="#{button.cancel}">취소</button>
             </div>
         </div>
+
     </form>
+
 </div> <!-- /container -->
 </body>
 </html>
