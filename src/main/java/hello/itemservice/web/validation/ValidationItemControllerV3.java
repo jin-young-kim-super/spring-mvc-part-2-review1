@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -22,9 +21,9 @@ import java.util.Map;
 
 @Slf4j
 @Controller
-@RequestMapping("/validation/v2/items")
+@RequestMapping("/validation/v3/items")
 @RequiredArgsConstructor
-public class ValidationItemControllerV2 {
+public class ValidationItemControllerV3 {
 
     private final ItemRepository itemRepository;
     private final ItemValidator itemValidator;
@@ -43,7 +42,7 @@ public class ValidationItemControllerV2 {
     public String items(Model model) {
         List<Item> items = itemRepository.findAll();
         model.addAttribute("items",items);
-        return "validation/v2/items";
+        return "validation/v3/items";
     }
 
     @GetMapping("{itemId}")
@@ -51,14 +50,14 @@ public class ValidationItemControllerV2 {
         Item findItem = itemRepository.findById(itemId);
         model.addAttribute("item",findItem);
 
-        return "validation/v2/item";
+        return "validation/v3/item";
     }
 
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("item",new Item());
 
-        return "validation/v2/addForm";
+        return "validation/v3/addForm";
     }
 
     //@PostMapping("/add")
@@ -102,7 +101,7 @@ public class ValidationItemControllerV2 {
             log.info("errors={}",bindingResult);
             //model.addAttribute("errors",errors);
             // -> BindingResult는 자동으로 Model에 담긴다
-            return "validation/v2/addForm";
+            return "validation/v3/addForm";
         }
 
         Item savedItem = itemRepository.save(item);
@@ -110,11 +109,11 @@ public class ValidationItemControllerV2 {
         redirectAttributes.addAttribute("itemId",savedItem.getId());
         // ?staus=true의 형태로 쿼리 파라미터 형태로 들어감
         redirectAttributes.addAttribute("staus",true);
-        return "redirect:/validation/v2/items/{itemId}";
+        return "redirect:/validation/v3/items/{itemId}";
     }
 
     //@PostMapping("/add")
-    public String addItemV2(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+    public String addItemv3(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         // 검증 오류 정보 보관
         //Map<String,String> errors = new HashMap<>();
@@ -154,7 +153,7 @@ public class ValidationItemControllerV2 {
             log.info("errors={}",bindingResult);
             //model.addAttribute("errors",errors);
             // -> BindingResult는 자동으로 Model에 담긴다
-            return "validation/v2/addForm";
+            return "validation/v3/addForm";
         }
 
         Item savedItem = itemRepository.save(item);
@@ -162,7 +161,7 @@ public class ValidationItemControllerV2 {
         redirectAttributes.addAttribute("itemId",savedItem.getId());
         // ?staus=true의 형태로 쿼리 파라미터 형태로 들어감
         redirectAttributes.addAttribute("staus",true);
-        return "redirect:/validation/v2/items/{itemId}";
+        return "redirect:/validation/v3/items/{itemId}";
     }
 
     //@PostMapping("/add")
@@ -203,7 +202,7 @@ public class ValidationItemControllerV2 {
             log.info("errors={}",bindingResult);
             //model.addAttribute("errors",errors);
             // -> BindingResult는 자동으로 Model에 담긴다
-            return "validation/v2/addForm";
+            return "validation/v3/addForm";
         }
 
         Item savedItem = itemRepository.save(item);
@@ -211,7 +210,7 @@ public class ValidationItemControllerV2 {
         redirectAttributes.addAttribute("itemId",savedItem.getId());
         // ?staus=true의 형태로 쿼리 파라미터 형태로 들어감
         redirectAttributes.addAttribute("staus",true);
-        return "redirect:/validation/v2/items/{itemId}";
+        return "redirect:/validation/v3/items/{itemId}";
     }
 
     //@PostMapping("/add")
@@ -255,7 +254,7 @@ public class ValidationItemControllerV2 {
             log.info("errors={}",bindingResult);
             //model.addAttribute("errors",errors);
             // -> BindingResult는 자동으로 Model에 담긴다
-            return "validation/v2/addForm";
+            return "validation/v3/addForm";
         }
 
         Item savedItem = itemRepository.save(item);
@@ -263,7 +262,7 @@ public class ValidationItemControllerV2 {
         redirectAttributes.addAttribute("itemId",savedItem.getId());
         // ?staus=true의 형태로 쿼리 파라미터 형태로 들어감
         redirectAttributes.addAttribute("staus",true);
-        return "redirect:/validation/v2/items/{itemId}";
+        return "redirect:/validation/v3/items/{itemId}";
     }
 
     //@PostMapping("/add")
@@ -275,7 +274,7 @@ public class ValidationItemControllerV2 {
             log.info("errors={}",bindingResult);
             //model.addAttribute("errors",errors);
             // -> BindingResult는 자동으로 Model에 담긴다
-            return "validation/v2/addForm";
+            return "validation/v3/addForm";
         }
 
         Item savedItem = itemRepository.save(item);
@@ -283,7 +282,7 @@ public class ValidationItemControllerV2 {
         redirectAttributes.addAttribute("itemId",savedItem.getId());
         // ?staus=true의 형태로 쿼리 파라미터 형태로 들어감
         redirectAttributes.addAttribute("staus",true);
-        return "redirect:/validation/v2/items/{itemId}";
+        return "redirect:/validation/v3/items/{itemId}";
     }
 
     /**
@@ -305,7 +304,7 @@ public class ValidationItemControllerV2 {
             log.info("errors={}",bindingResult);
             //model.addAttribute("errors",errors);
             // -> BindingResult는 자동으로 Model에 담긴다
-            return "validation/v2/addForm";
+            return "validation/v3/addForm";
         }
 
         Item savedItem = itemRepository.save(item);
@@ -313,19 +312,19 @@ public class ValidationItemControllerV2 {
         redirectAttributes.addAttribute("itemId",savedItem.getId());
         // ?staus=true의 형태로 쿼리 파라미터 형태로 들어감
         redirectAttributes.addAttribute("staus",true);
-        return "redirect:/validation/v2/items/{itemId}";
+        return "redirect:/validation/v3/items/{itemId}";
     }
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
         Item findItem = itemRepository.findById(itemId);
         model.addAttribute("item",findItem);
-        return "/validation/v2/editForm";
+        return "/validation/v3/editForm";
     }
 
     @PostMapping("/{itemId}/edit")
     public String edit(@PathVariable Long itemId, @ModelAttribute Item item) {
         itemRepository.updateItem(itemId, item);
-        return "redirect:/validation/v2/items/{itemId}";
+        return "redirect:/validation/v3/items/{itemId}";
     }
 }
