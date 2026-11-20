@@ -4,6 +4,8 @@ import hello.itemservice.domain.item.Item;
 import hello.itemservice.domain.item.ItemRepository;
 import hello.itemservice.domain.item.SaveCheck;
 import hello.itemservice.domain.item.UpdateCehck;
+import hello.itemservice.web.validation.form.ItemSaveForm;
+import hello.itemservice.web.validation.form.ItemUpdateForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -103,7 +105,7 @@ public class ValidationItemControllerv4 {
         return "redirect:/validation/v4/items/{itemId}";
     }
 
-    @PostMapping("/add")
+    //@PostMapping("/add")
     public String addItemV8(@Validated(SaveCheck.class) @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         // 복합 룰 검증 : 너무 가격이 작은 주문은 안 받는다는 비지니스 요구사항에 대한 검증
@@ -129,6 +131,35 @@ public class ValidationItemControllerv4 {
         return "redirect:/validation/v4/items/{itemId}";
     }
 
+    @PostMapping("/add")
+    public String addItemV9(@Validated @ModelAttribute("item") ItemSaveForm saveItem, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+
+        // 복합 룰 검증 : 너무 가격이 작은 주문은 안 받는다는 비지니스 요구사항에 대한 검증
+        if(saveItem.getPrice() != null && saveItem.getQuantity() != null) {
+            int resultPrice = saveItem.getPrice() * saveItem.getQuantity();
+            if(resultPrice < 10000) {
+                bindingResult.reject("totalPriceMin",new Object[]{10000,resultPrice},null);
+            }
+        }
+
+        if(bindingResult.hasErrors()) {
+            log.info("errors={}",bindingResult);
+            //model.addAttribute("errors",errors);
+            // -> BindingResult는 자동으로 Model에 담긴다
+            return "validation/v4/addForm";
+        }
+
+        // 상품 등록 DTO -> Item 객체 변환
+        Item item = new Item(saveItem.getItemName(), saveItem.getPrice(), saveItem.getQuantity());
+
+        Item savedItem = itemRepository.save(item);
+        // {itemId}에 자동으로 saveItem.getId()가 들어감
+        redirectAttributes.addAttribute("itemId",savedItem.getId());
+        // ?staus=true의 형태로 쿼리 파라미터 형태로 들어감
+        redirectAttributes.addAttribute("staus",true);
+        return "redirect:/validation/v4/items/{itemId}";
+    }
+
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
         Item findItem = itemRepository.findById(itemId);
@@ -137,11 +168,11 @@ public class ValidationItemControllerv4 {
     }
 
     @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, @Validated(UpdateCehck.class) @ModelAttribute Item item, BindingResult bindingResult) {
+    public String edit(@PathVariable Long itemId, @Validated @ModelAttribute("item") ItemUpdateForm updateItem, BindingResult bindingResult) {
 
         // 복합 룰 검증 : 너무 가격이 작은 주문은 안 받는다는 비지니스 요구사항에 대한 검증
-        if(item.getPrice() != null && item.getQuantity() != null) {
-            int resultPrice = item.getPrice() * item.getQuantity();
+        if(updateItem.getPrice() != null && updateItem.getQuantity() != null) {
+            int resultPrice = updateItem.getPrice() * updateItem.getQuantity();
             if(resultPrice < 10000) {
                 bindingResult.reject("totalPriceMin",new Object[]{10000,resultPrice},null);
             }
@@ -153,6 +184,9 @@ public class ValidationItemControllerv4 {
             // -> BindingResult는 자동으로 Model에 담긴다
             return "validation/v4/editForm";
         }
+
+        // 상품 등록 DTO -> Item 객체 변환
+        Item item = new Item(updateItem.getItemName(), updateItem.getPrice(), updateItem.getQuantity());
 
         itemRepository.updateItem(itemId, item);
         return "redirect:/validation/v4/items/{itemId}";
