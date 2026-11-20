@@ -110,7 +110,23 @@ public class ValidationItemControllerV3 {
     }
 
     @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, @ModelAttribute Item item) {
+    public String edit(@PathVariable Long itemId, @Validated @ModelAttribute Item item, BindingResult bindingResult) {
+
+        // 복합 룰 검증 : 너무 가격이 작은 주문은 안 받는다는 비지니스 요구사항에 대한 검증
+        if(item.getPrice() != null && item.getQuantity() != null) {
+            int resultPrice = item.getPrice() * item.getQuantity();
+            if(resultPrice < 10000) {
+                bindingResult.reject("totalPriceMin",new Object[]{10000,resultPrice},null);
+            }
+        }
+
+        if(bindingResult.hasErrors()) {
+            log.info("errors={}",bindingResult);
+            //model.addAttribute("errors",errors);
+            // -> BindingResult는 자동으로 Model에 담긴다
+            return "validation/v3/editForm";
+        }
+
         itemRepository.updateItem(itemId, item);
         return "redirect:/validation/v3/items/{itemId}";
     }

@@ -17,7 +17,7 @@ import java.util.List;
 
 @Data
 // Hibernate에서 제공
-@ScriptAssert(lang = "javascript", script = "_this.price * _this.quantity >=10000", message = "총합이 10,000이 넘어야 합니다.")
+//@ScriptAssert(lang = "javascript", script = "_this.price * _this.quantity >=10000", message = "총합이 10,000이 넘어야 합니다.")
 public class Item {
 
     private Long id;
