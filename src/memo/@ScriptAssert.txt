@@ -1,0 +1,36 @@
+@ScriptAssert(lang = "javascript", script = "_this.price * _this.quantity >=10000")의 실행 결과는 아래와 같다.
+-> org.hibernate.validator.spi.scripting.ScriptEvaluatorNotFoundException: HV000232: No JSR 223 script engine found for language "javascript".
+즉, 실행 오류가 난다. 그 이유를 아래에 정리를 했다. 
+
+이유 : 
+JDK가 지원하는 스크립트 엔진이 달라 발생한 오류입니다.
+
+JDK 8부터 14까지는 JavaScript를 지원하는 Nashorn 엔진을 쓰지만, JDK 14 이후부터는 JavaScript가 지원되지 않는 GraalVM을 사용하기 때문
+
+만약 해결하고 싶다면 아래와 같이 gradle에 Nashorn 엔진을 쓰도록 수정을 해야 합니다. 
+
+dependencies {implementation 'org.openjdk.nashorn:nashorn-core:15.3'}
+
+
+@ScriptAssert가 실무에서 거의 사용 안 되는 이유
+-> 지원하는 기능이 너무 빈약하다. 
+특정 필드값 검증과는 달리, 복합룰 검증에는 자바 코드도 많이 들어 가고, 때에 따라서는 DB로부터 값을 가져와서 로직 검증을 만들어야 하는 경우도 있기에 @ScriptAssert는 그런 면에서
+전혀 효용성이 없다. 
+
+그래서 김영한 왈 : "복합룰의 경우, 아래와 같이 해당 컨트롤러에 그냥 직접 검증 로직 작성하는 것을 권함"라고 함.
+->   그리고 그런한 복합룰 코드는 보통의 경우 아래와 같은 메서리로 관리하는 것이 좋다.어쨋뜻 함수도 어떻게 보면 객체라고 볼 수도? 있다고 나는 생각!
+
+ // 복합 룰 검증 : 너무 가격이 작은 주문은 안 받는다는 비지니스 요구사항에 대한 검증
+if(item.getPrice() != null && item.getQuantity() != null) {
+    int resultPrice = item.getPrice() * item.getQuantity();
+    if(resultPrice < 10000) {
+        bindingResult.reject("totalPriceMin",new Object[]{10000,resultPrice},null);
+    }
+}
+
+if(bindingResult.hasErrors()) {
+    log.info("errors={}",bindingResult);
+    //model.addAttribute("errors",errors);
+    // -> BindingResult는 자동으로 Model에 담긴다
+    return "validation/v3/addForm";
+}

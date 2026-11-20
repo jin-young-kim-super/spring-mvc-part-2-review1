@@ -57,7 +57,7 @@ public class ValidationItemControllerV3 {
      * Bean Validation의 validator는 객체(ex.Item)에 입력값이 바인딩된 다음에야 적용이 된다.
      * -> 당연한 이야기이다. 예를 들어 가격에 "ㅂㅂㅂㅂ"를 입력되어서 바인딩이 되지도 않았는데, 검증을 해도 의미가 없다.
      */
-    @PostMapping("/add")
+    //@PostMapping("/add")
     public String addItemV6(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         if(bindingResult.hasErrors()) {
@@ -74,6 +74,33 @@ public class ValidationItemControllerV3 {
         redirectAttributes.addAttribute("staus",true);
         return "redirect:/validation/v3/items/{itemId}";
     }
+
+    @PostMapping("/add")
+    public String addItemV7(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+
+        // 복합 룰 검증 : 너무 가격이 작은 주문은 안 받는다는 비지니스 요구사항에 대한 검증
+        if(item.getPrice() != null && item.getQuantity() != null) {
+            int resultPrice = item.getPrice() * item.getQuantity();
+            if(resultPrice < 10000) {
+                bindingResult.reject("totalPriceMin",new Object[]{10000,resultPrice},null);
+            }
+        }
+
+        if(bindingResult.hasErrors()) {
+            log.info("errors={}",bindingResult);
+            //model.addAttribute("errors",errors);
+            // -> BindingResult는 자동으로 Model에 담긴다
+            return "validation/v3/addForm";
+        }
+
+        Item savedItem = itemRepository.save(item);
+        // {itemId}에 자동으로 saveItem.getId()가 들어감
+        redirectAttributes.addAttribute("itemId",savedItem.getId());
+        // ?staus=true의 형태로 쿼리 파라미터 형태로 들어감
+        redirectAttributes.addAttribute("staus",true);
+        return "redirect:/validation/v3/items/{itemId}";
+    }
+
 
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank; // 자바 표준
 import jakarta.validation.constraints.NotNull; // 자바 표준
 import lombok.Data;
 import org.hibernate.validator.constraints.Range; // @Range는 하이버네이트서 제공
+import org.hibernate.validator.constraints.ScriptAssert;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ import java.util.List;
  */
 
 @Data
+// Hibernate에서 제공
+@ScriptAssert(lang = "javascript", script = "_this.price * _this.quantity >=10000", message = "총합이 10,000이 넘어야 합니다.")
 public class Item {
 
     private Long id;
