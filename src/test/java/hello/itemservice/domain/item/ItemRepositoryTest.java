@@ -63,7 +63,7 @@ class ItemRepositoryTest {
 
         //when
         Item updateItem = new Item("itemB", 2000, 20);
-        itemRepository.updateItem(id,updateItem);
+        itemRepository.update(id,updateItem);
 
         //then
         Item findItem = itemRepository.findById(id);
