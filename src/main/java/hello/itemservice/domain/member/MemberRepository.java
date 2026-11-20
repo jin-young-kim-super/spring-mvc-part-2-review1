@@ -28,13 +28,18 @@ public class MemberRepository {
     }
 
     public Optional<Member> findByLoginId(String loginId) {
-        List<Member> allMember = findAll();
-        for (Member member : allMember) {
-            if (member.getLoginId().equals(loginId)) {
-                return Optional.of(member);
-            }
-        }
-        return Optional.empty();
+//        List<Member> allMember = findAll();
+//        for (Member member : allMember) {
+//            if (member.getLoginId().equals(loginId)) {
+//                return Optional.of(member);
+//            }
+//        }
+//        return Optional.empty();
+
+        return findAll().stream()
+                .filter(member -> member.getLoginId().equals(loginId))
+                .findFirst();
+
     }
 
     public void clearStore() {
