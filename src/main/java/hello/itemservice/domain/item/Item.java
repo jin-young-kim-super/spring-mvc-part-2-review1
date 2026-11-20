@@ -26,6 +26,7 @@ public class Item {
     @Range(min =1000 , max =100000)
     private Integer price;
 
+    @NotNull
     @Max(value = 9999)
     private Integer quantity;
 

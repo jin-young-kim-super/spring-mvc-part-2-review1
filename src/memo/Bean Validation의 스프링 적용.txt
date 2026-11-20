@@ -1,0 +1,12 @@
+Bean Validation의 스프링 적용?
+-> 뭔말인지 첨에는 모른다. 저번에 언급을 하였는데 Bean Validation 즉 @NotBlank, @Max 등의 에노테이션 모음과 인터페이스 모음인 Bean Validation은 java 표준에서 제공하는 기능이다. 
+스프링이 제공하는 기능이 아니다. (@Range 등은 하이버네이트에서 제공한다. 그러나 실무 대부분 하이버네이트 Bean Validator를 사용하므로 사용해도 ㄱㅊ)
+
+그리고 아래에서도 보았듯이 자바 표준이 제공하는 만큼 사용하려면 여러 추가 코드가 필요하다. 
+그러나 이 Bean Validation은 스프링 프레임워크과 이미 통합돼 있어서, 아래와 같은 코드를 개발자가 일일이 칠 필요가 없이 스프링 프레임워크 내부에서 자동으로 생성 및 호출을 한다.
+
+ex)
+ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+Validator validator = factory.getValidator();
+// 생략
+Set<ConstraintViolation<Item>> violations = validator.validate(item) // 이 부분이 Bean Validation을 직접 사용하는 부분
