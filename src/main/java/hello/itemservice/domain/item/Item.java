@@ -1,6 +1,10 @@
 package hello.itemservice.domain.item;
 
+import jakarta.validation.constraints.Max; // 자바 표준
+import jakarta.validation.constraints.NotBlank; // 자바 표준
+import jakarta.validation.constraints.NotNull; // 자바 표준
 import lombok.Data;
+import org.hibernate.validator.constraints.Range; // @Range는 하이버네이트서 제공
 
 import java.util.List;
 
@@ -14,8 +18,15 @@ import java.util.List;
 public class Item {
 
     private Long id;
+
+    @NotBlank // 빈값 + 공백인지를 검증
     private String itemName;
+
+    @NotNull
+    @Range(min =1000 , max =100000)
     private Integer price;
+
+    @Max(value = 9999)
     private Integer quantity;
 
     /**
