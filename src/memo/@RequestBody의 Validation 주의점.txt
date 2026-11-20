@@ -1,0 +1,4 @@
+@ModelAttribute, @RequestParam은 TypeMistmatch가 일어나도 컨트롤러가 호출이 됐다. 
+예를 들어 상품 가격에 숫자가 아닌 문자열 "qqqqq"를 입력해도 컨트롤러는 호출이 됐다. 
+하지만 @RequestBody의 경우 TypeMismatch가 일어나면 아무리 뒤에 BindingResult가 있다고 하더라고 컨트롤러 호출 자체가 안 된다는 점이 큰 차이점이다. 
+-> 이 때에는 아예 객체 생성을 하지 않는다. 그렇게 떄문에 validator도 적용되지 x(객체 생성아 안되고 예외를 던진다)
