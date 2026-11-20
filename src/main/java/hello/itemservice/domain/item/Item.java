@@ -20,16 +20,20 @@ import java.util.List;
 //@ScriptAssert(lang = "javascript", script = "_this.price * _this.quantity >=10000", message = "총합이 10,000이 넘어야 합니다.")
 public class Item {
 
+    @NotNull(groups = UpdateCehck.class) // 상품 수정 시에만 검증
     private Long id;
 
-    @NotBlank // 빈값 + 공백인지를 검증
+    /**
+     * 상품 등록/상품 수정 시, 둘다 검증
+     */
+    @NotBlank(groups = {SaveCheck.class, UpdateCehck.class}) // 빈값 + 공백인지를 검증
     private String itemName;
 
-    @NotNull
+    @NotNull(groups = {SaveCheck.class, UpdateCehck.class})
     @Range(min =1000 , max =100000)
     private Integer price;
 
-    @NotNull
+    @NotNull(groups = {SaveCheck.class, UpdateCehck.class})
     @Max(value = 9999)
     private Integer quantity;
 
