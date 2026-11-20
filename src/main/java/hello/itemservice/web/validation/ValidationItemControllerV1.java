@@ -72,7 +72,7 @@ public class ValidationItemControllerV1 {
      * 넘어 간다.
      */
     //@PostMapping("/add")
-    public String addItemV3(@ModelAttribute("item") Item item) {
+    public String addItemv4(@ModelAttribute("item") Item item) {
         itemRepository.save(item);
         return "validation/v1/item";
     }

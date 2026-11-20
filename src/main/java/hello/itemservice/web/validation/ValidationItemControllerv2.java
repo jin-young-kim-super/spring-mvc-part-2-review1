@@ -166,7 +166,7 @@ public class ValidationItemControllerv2 {
     }
 
     //@PostMapping("/add")
-    public String addItemv3(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+    public String addItemv4(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
 
         /**
          * 검증 로직 시작(특정 필드, 복합 룰 검증)
