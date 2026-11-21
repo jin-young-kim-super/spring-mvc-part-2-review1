@@ -5,6 +5,7 @@ import hello.itemservice.domain.member.Member;
 import hello.itemservice.domain.member.MemberRepository;
 import hello.itemservice.web.login.session.SessionManager;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -46,7 +47,7 @@ public class HomeController {
         return "loginHome";
     }
 
-    @GetMapping("/")
+    //@GetMapping("/")
     public String homeLoginV2(HttpServletRequest request, Model model) {
 
         Member member = (Member)sessionManager.getSession(request);
@@ -60,4 +61,19 @@ public class HomeController {
         return "loginHome";
     }
 
+    @GetMapping("/")
+    public String homeLoginV3(HttpServletRequest request, Model model) {
+
+        // create : false
+        // -> 로그인 화면에 처음 들어 왔는데, 자동으로 세션이 만들어 지면 안 된다.
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            return "home";
+        }
+
+        Member loginMember = (Member)session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        model.addAttribute("member",loginMember);
+        return "loginHome";
+    }
 }
