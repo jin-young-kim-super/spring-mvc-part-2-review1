@@ -1,9 +1,14 @@
 package hello.itemservice.web.login;
 
+import hello.itemservice.web.filter.LogFilter;
+import hello.itemservice.web.filter.LoginCheckFilter;
+import hello.itemservice.web.interceptor.LogInterceptor;
 import jakarta.servlet.Filter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * 필터(Logfilter)를 @Component로 빈 등록 안(못) 하는 이유
@@ -14,9 +19,17 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-public class WebConfig {
+public class WebConfig implements WebMvcConfigurer {
 
-    @Bean
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LogInterceptor())
+                .order(1)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/css/**","/*.ico","/error");
+    }
+
+    //@Bean
     public FilterRegistrationBean logFilter() {
         FilterRegistrationBean<Filter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
         filterFilterRegistrationBean.setFilter(new LogFilter());
@@ -25,7 +38,7 @@ public class WebConfig {
         return filterFilterRegistrationBean;
     }
 
-    @Bean
+    //@Bean
     public FilterRegistrationBean loginCheckFilter() {
         FilterRegistrationBean<Filter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
         filterFilterRegistrationBean.setFilter(new LoginCheckFilter());
