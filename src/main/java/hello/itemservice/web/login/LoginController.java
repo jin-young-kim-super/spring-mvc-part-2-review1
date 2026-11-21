@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @Controller
@@ -76,7 +77,7 @@ public class LoginController {
         return "redirect:/";
     }
 
-    @PostMapping("/login")
+    //@PostMapping("/login")
     public String loginV3(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletRequest request) {
 
         if(bindingResult.hasErrors()) {
@@ -98,6 +99,30 @@ public class LoginController {
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
         return "redirect:/";
+    }
+
+    @PostMapping("/login")
+    public String loginV4(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult, @RequestParam(defaultValue = "/") String redirectURL, HttpServletRequest request) {
+
+        if(bindingResult.hasErrors()) {
+            return "login/loginForm";
+        }
+
+        Member loginMember = loginService.login(form.getLoginId(), form.getPassword());
+        // 복합룰 검증
+        if(loginMember == null) {
+            bindingResult.reject("loginFail","아이디 또는 비밀번호가 잘못됐습니다.");
+            return "login/loginForm";
+        }
+
+        // 서블리이 제공하는 세션 기능 사용 : HttpSession 인터페이스를 Tomcat이 구현체로 만들어 세션 기능 제공
+        // HttpSession.getSession() : 이전에 로그인 한 적이 있어서 메모리의 세션 테이블에 이미 해당 세션이 존재하면 그것을 반환하고,
+        // 만약 이번이 처음 로그인이라서 세션 테이블에 세션이 없다면 세션을 세션 테이블에 생성해서 반환
+        //※ Tomcat의 HttpServeltRequestfacade 객체에 있는 JESSIONID와 Member get해서 (JSESSIONID,Member)를 자동으로 세션 생성
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
+
+        return "redirect:" + redirectURL;
     }
 
     //@PostMapping("/logout")

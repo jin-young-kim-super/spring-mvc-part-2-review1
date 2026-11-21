@@ -1,4 +1,4 @@
-package hello.itemservice.web.web;
+package hello.itemservice.web.login;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

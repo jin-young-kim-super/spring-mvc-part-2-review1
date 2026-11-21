@@ -1,6 +1,5 @@
 package hello.itemservice.web.login;
 
-import hello.itemservice.web.web.LogFilter;
 import jakarta.servlet.Filter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +21,16 @@ public class WebConfig {
         FilterRegistrationBean<Filter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
         filterFilterRegistrationBean.setFilter(new LogFilter());
         filterFilterRegistrationBean.setOrder(1); // 필터 적용 순서
+        filterFilterRegistrationBean.addUrlPatterns("/*"); // 필용 적용한 요청 URL
+        return filterFilterRegistrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean loginCheckFilter() {
+        FilterRegistrationBean<Filter> filterFilterRegistrationBean = new FilterRegistrationBean<>();
+        filterFilterRegistrationBean.setFilter(new LoginCheckFilter());
+        filterFilterRegistrationBean.setOrder(2); // 필터 적용 순서
+        // whiteList에서 사실상 URL 필터링하고 있음
         filterFilterRegistrationBean.addUrlPatterns("/*"); // 필용 적용한 요청 URL
         return filterFilterRegistrationBean;
     }
