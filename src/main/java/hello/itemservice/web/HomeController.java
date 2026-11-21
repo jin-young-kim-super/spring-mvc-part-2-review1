@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Slf4j
 @Controller
@@ -61,7 +62,7 @@ public class HomeController {
         return "loginHome";
     }
 
-    @GetMapping("/")
+    //@GetMapping("/")
     public String homeLoginV3(HttpServletRequest request, Model model) {
 
         // create : false
@@ -72,6 +73,22 @@ public class HomeController {
         }
 
         Member loginMember = (Member)session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        model.addAttribute("member",loginMember);
+        return "loginHome";
+    }
+
+    // @SessionAttribute : 스프링 제공 기능으며, HttpServeltRequestFacad에 있는 JSESSIONID를 보고 세션 테이블에서 해당 Member 객체가 있으면 반환
+    // required=false : 아직 로그인 안 한 사용자도 Home 화면에는 들어 올 수 있어야 한다.
+    @GetMapping("/")
+    public String homeLoginV3Spring(
+            @SessionAttribute(name=SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+            Model model
+    ) {
+
+        if(loginMember == null) {
+            return "home";
+        }
 
         model.addAttribute("member",loginMember);
         return "loginHome";
