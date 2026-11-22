@@ -3,6 +3,7 @@ package hello.itemservice.web;
 import hello.itemservice.domain.login.LoginService;
 import hello.itemservice.domain.member.Member;
 import hello.itemservice.domain.member.MemberRepository;
+import hello.itemservice.web.argumentResolver.Login;
 import hello.itemservice.web.login.session.SessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -80,11 +81,26 @@ public class HomeController {
 
     // @SessionAttribute : 스프링 제공 기능으며, HttpServeltRequestFacad에 있는 JSESSIONID를 보고 세션 테이블에서 해당 Member 객체가 있으면 반환
     // required=false : 아직 로그인 안 한 사용자도 Home 화면에는 들어 올 수 있어야 한다.
-    @GetMapping("/")
+    //@GetMapping("/")
     public String homeLoginV3Spring(
             @SessionAttribute(name=SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
             Model model
     ) {
+
+        if(loginMember == null) {
+            return "home";
+        }
+
+        model.addAttribute("member",loginMember);
+        return "loginHome";
+    }
+
+    /**
+     * 로그인 Member 객체를 【공통】으로 필요로 하는 모든 컨트롤러에 대해서 이제 @Login 에노테이션 하나만 적어 주면 끝난다.
+     * -> @SessionAttribute를 잘 모르는 개발자들 위한 협업에 좋다. 특히 @SessionAttribute는 required도 고려해야 해서 @Login이 그런 점에서 좋다.
+     */
+    @GetMapping("/")
+    public String homeLoginV4Spring(@Login Member loginMember, Model model) {
 
         if(loginMember == null) {
             return "home";

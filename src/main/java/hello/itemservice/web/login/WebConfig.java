@@ -1,5 +1,6 @@
 package hello.itemservice.web.login;
 
+import hello.itemservice.web.argumentResolver.LoginMemberArgumentResolver;
 import hello.itemservice.web.filter.LogFilter;
 import hello.itemservice.web.filter.LoginCheckFilter;
 import hello.itemservice.web.interceptor.LogInterceptor;
@@ -8,8 +9,11 @@ import jakarta.servlet.Filter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 /**
  * 필터(Logfilter)를 @Component로 빈 등록 안(못) 하는 이유
@@ -39,6 +43,11 @@ public class WebConfig implements WebMvcConfigurer {
                         "/", "/members/add", "/login", "/logout",
                         "/css/**", "/*.ico", "/error"
                 );
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new LoginMemberArgumentResolver());
     }
 
     //@Bean
