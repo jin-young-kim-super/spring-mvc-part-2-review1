@@ -3,6 +3,7 @@ package hello.itemservice.web.login;
 import hello.itemservice.web.filter.LogFilter;
 import hello.itemservice.web.filter.LoginCheckFilter;
 import hello.itemservice.web.interceptor.LogInterceptor;
+import hello.itemservice.web.interceptor.LoginCheckInterceptor;
 import jakarta.servlet.Filter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,17 @@ public class WebConfig implements WebMvcConfigurer {
                 .order(1)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/css/**","/*.ico","/error");
+
+        registry.addInterceptor(new LoginCheckInterceptor())
+                .order(2)
+                .addPathPatterns("/**")
+                // 이게 서블릿 필터를 사용하지 않고 스프링 인터셉터를 사용하는 이유이다.
+                // -> 서블릿 필터는 배제할 URL을 지정하는 기능이 없어서 whitelist를 별도로 만들어야 했는데
+                // 스프링 인터셉터는 등록할 떄 그냥 바로 설정이 가능하다.
+                .excludePathPatterns(
+                        "/", "/members/add", "/login", "/logout",
+                        "/css/**", "/*.ico", "/error"
+                );
     }
 
     //@Bean
